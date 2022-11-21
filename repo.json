@@ -1,0 +1,9 @@
+[
+    {
+        "name" : "bat",
+        "appType" : "deb",
+        "url" : "github.com/sharkdp/bat/releases/download/v0.22.1/bat_0.22.1_amd64.deb",
+        "source" : "github",
+        "sourceUrl" : "github.com/sharkdp/bat"
+    }
+]

@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/afelinczak/app-get/infrastructure"
 	"github.com/spf13/cobra"
 )
 
@@ -11,6 +12,7 @@ var updateCmd = &cobra.Command{
 	Use:   "update",
 	Short: "refresh list of applications from repository",
 	Run: func(cmd *cobra.Command, args []string) {
+		infrastructure.GetRepo()
 		fmt.Println("update called")
 	},
 }
