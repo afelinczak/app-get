@@ -2,7 +2,6 @@ package infrastructure
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -11,11 +10,26 @@ import (
 )
 
 const REPO_PATH string = "repo.json"
+const APPS_PATH string = "apps.json"
 
-func GetRepo() {
+func GetRepo() []domain.App {
+	var result = readFromFile(REPO_PATH)
+	var apps []domain.App
+	json.Unmarshal([]byte(result), &apps)
+	return apps
+}
 
-	//pwd, _ := os.Getwd()
-	fileContent, err := os.Open(REPO_PATH)
+func GetInstalledApps() []domain.InstalledApp {
+
+	var result = readFromFile(APPS_PATH)
+	var apps []domain.InstalledApp
+	json.Unmarshal([]byte(result), &apps)
+	return apps
+}
+
+func readFromFile(path string) []byte {
+
+	fileContent, err := os.Open(path)
 
 	if err != nil {
 		log.Fatal(err)
@@ -25,9 +39,5 @@ func GetRepo() {
 	defer fileContent.Close()
 
 	byteResult, _ := ioutil.ReadAll(fileContent)
-
-	var repo []domain.App
-	json.Unmarshal([]byte(byteResult), &repo)
-
-	fmt.Println(repo)
+	return byteResult
 }

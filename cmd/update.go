@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os/exec"
 
 	"github.com/afelinczak/app-get/infrastructure"
 	"github.com/spf13/cobra"
@@ -12,8 +13,26 @@ var updateCmd = &cobra.Command{
 	Use:   "update",
 	Short: "refresh list of applications from repository",
 	Run: func(cmd *cobra.Command, args []string) {
-		infrastructure.GetRepo()
-		fmt.Println("update called")
+		var installedApps = infrastructure.GetInstalledApps()
+		for i := 0; i < len(installedApps); i++ {
+			var version = infrastructure.GetLatestVersion(installedApps[i].App)
+			fmt.Println("Latest available version of " + installedApps[i].App.Name + " version is " + version.Name)
+
+			if installedApps[i].Version != version.Name {
+				fmt.Println("Download newer version of " + installedApps[i].App.Name)
+
+				var path string = infrastructure.GetInstallationFile(installedApps[i].App, version)
+				fmt.Println("Try to install deb package " + path)
+				var cmd = exec.Command("/bin/sh", "-c", "sudo dpkg -i "+path)
+				var err = cmd.Run()
+				if err != nil {
+					fmt.Println(err)
+					fmt.Println("installed sucessfully")
+				}
+			}
+		}
+		//infrastructure.GetRepo()
+
 	},
 }
 

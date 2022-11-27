@@ -1,0 +1,22 @@
+[
+    {
+        "app":
+            {
+                "name" : "bat",
+                "app_type":  "deb",
+                "source" : "github",
+                "source_url" :  "sharkdp/bat"
+            },
+            "version": "v0.21.1"
+    },
+    {
+       "app" :
+            {
+                "name" : "dbeaver-ce",
+                "app_type" : "deb",
+                "source" : "github",
+                "source_url" : "dbeaver/dbeaver"
+            },
+            "version": "22.2.4"
+    }
+]

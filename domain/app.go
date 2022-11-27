@@ -3,21 +3,20 @@ package domain
 type AppType string
 
 const (
-	deb      AppType = "deb"
-	appImage AppType = "appImage"
+	Deb      AppType = "deb"
+	AppImage AppType = "appImage"
 )
 
 type AppSource string
 
 const (
-	github AppSource = "github"
+	Github AppSource = "github"
 )
 
 type App struct {
-	name      string
-	url       string
-	appUrl    string
-	appType   AppType
-	source    AppSource
-	sourceUrl string
+	Name      string    `json:"name"`
+	AppUrl    string    `json:"app_url"`
+	AppType   AppType   `json:"app_type"`
+	Source    AppSource `json:"source"`
+	SourceUrl string    `json:"source_url"`
 }
