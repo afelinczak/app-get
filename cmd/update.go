@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"os/exec"
 
+	"github.com/afelinczak/app-get/domain"
 	"github.com/afelinczak/app-get/infrastructure"
 	"github.com/spf13/cobra"
 )
@@ -18,21 +18,13 @@ var updateCmd = &cobra.Command{
 			var version = infrastructure.GetLatestVersion(installedApps[i].App)
 			fmt.Println("Latest available version of " + installedApps[i].App.Name + " version is " + version.Name)
 
-			if installedApps[i].Version != version.Name {
+			if domain.IsAvailableVersionNewerAndStable(installedApps[i].Version, version.Name) {
 				fmt.Println("Download newer version of " + installedApps[i].App.Name)
 
-				var path string = infrastructure.GetInstallationFile(installedApps[i].App, version)
-				fmt.Println("Try to install deb package " + path)
-				var cmd = exec.Command("/bin/sh", "-c", "sudo dpkg -i "+path)
-				var err = cmd.Run()
-				if err != nil {
-					fmt.Println(err)
-					fmt.Println("installed sucessfully")
-				}
+				var path = infrastructure.GetInstallationFile(installedApps[i].App, version)
+				infrastructure.InstallApp(path)
 			}
 		}
-		//infrastructure.GetRepo()
-
 	},
 }
 

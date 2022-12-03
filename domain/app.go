@@ -20,3 +20,11 @@ type App struct {
 	Source    AppSource `json:"source"`
 	SourceUrl string    `json:"source_url"`
 }
+
+// AddNewApp - saves to disk updated list of installed apps
+func AddNewApp(newApp App, version string, getApps func() []InstalledApp, save func([]InstalledApp)) {
+	var apps = getApps()
+	var newAppWithVersion = InstalledApp{App: newApp, Version: version}
+	var newList = append(apps, newAppWithVersion)
+	save(newList)
+}
