@@ -23,6 +23,7 @@ var updateCmd = &cobra.Command{
 
 				var path = infrastructure.GetInstallationFile(installedApps[i].App, version)
 				infrastructure.InstallApp(path)
+				domain.UpdateAppVersion(installedApps[i].App, version.Name, infrastructure.GetInstalledApps, infrastructure.WriteInstalledApps)
 			}
 		}
 	},

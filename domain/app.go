@@ -28,3 +28,15 @@ func AddNewApp(newApp App, version string, getApps func() []InstalledApp, save f
 	var newList = append(apps, newAppWithVersion)
 	save(newList)
 }
+
+// UpdateAppVersion - updates version of the app and saves to disk
+func UpdateAppVersion(updatedApp App, version string, getApps func() []InstalledApp, save func([]InstalledApp)) {
+	var apps = getApps()
+	for i := 0; i < len(apps); i++ {
+		if apps[i].App.Name == updatedApp.Name {
+			apps[i].Version = version
+			break
+		}
+	}
+	save(apps)
+}
