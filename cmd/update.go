@@ -11,7 +11,7 @@ import (
 // updateCmd represents the update command
 var updateCmd = &cobra.Command{
 	Use:   "update",
-	Short: "refresh list of applications from repository",
+	Short: "download new version of the installed apps and installs them",
 	Run: func(cmd *cobra.Command, args []string) {
 		var appRepo = infrastructure.AppRepository{}
 		var installedApps = appRepo.Get()

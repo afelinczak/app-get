@@ -7,15 +7,21 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/afelinczak/app-get/infrastructure"
 	"github.com/spf13/cobra"
 )
 
 // listCmd represents the list command
 var listCmd = &cobra.Command{
 	Use:   "list",
-	Short: "Display list of supported apps",
+	Short: "Display list of installed apps",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("list called")
+		var appRepo = infrastructure.AppRepository{}
+		var apps = appRepo.Get()
+		fmt.Println("Installed applications")
+		for i := 0; i < len(apps); i++ {
+			fmt.Println(apps[i].App.Name + "(" + apps[i].Version + ")")
+		}
 	},
 }
 
