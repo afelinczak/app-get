@@ -5,18 +5,31 @@ import (
 	"errors"
 	"log"
 	"os"
+	"os/user"
+	"strings"
 
 	"github.com/afelinczak/app-get/domain"
 )
 
-const APP_FILE_PATH = "apps.json"
+const APPS_FILE_PATH = "/home/{user}/.config/app-get"
+const APPS_FILE_NAME = "apps.json"
+
+func getAppsPath() string {
+	currentUser, _ := user.Current()
+	return strings.Replace(APPS_FILE_PATH, "{user}", currentUser.Username, 1)
+}
+
+func getAppsFile() string {
+	return getAppsPath() + "/" + APPS_FILE_NAME
+}
 
 // CreateInstalledAppListFile - creates empty apps.json file if not found
 func CreateInstalledAppListFile() {
-	var _, err = os.Stat(APP_FILE_PATH)
+	var _, err = os.Stat(getAppsFile())
 
 	if errors.Is(err, os.ErrNotExist) {
-		var newFileContent, errCreate = os.Create(APP_FILE_PATH)
+		os.Mkdir(getAppsPath(), 0777)
+		var newFileContent, errCreate = os.Create(getAppsFile())
 		if errCreate != nil {
 			log.Fatal(errCreate)
 			os.Exit(101)
@@ -28,7 +41,7 @@ func CreateInstalledAppListFile() {
 
 // GetInstalledApps load list of apps from apps.json
 func getInstalledApps() []domain.InstalledApp {
-	var result = readFromFile(APPS_PATH)
+	var result = readFromFile(getAppsFile())
 	var apps []domain.InstalledApp
 	json.Unmarshal([]byte(result), &apps)
 	return apps
@@ -37,7 +50,7 @@ func getInstalledApps() []domain.InstalledApp {
 // WriteInstalledApps overwrites list of installed apps
 func writeInstalledApps(apps []domain.InstalledApp) {
 	var json, _ = json.MarshalIndent(apps, "", "    ")
-	writeToFile(APPS_PATH, string(json))
+	writeToFile(getAppsFile(), string(json))
 }
 
 // AppRepository implementation
