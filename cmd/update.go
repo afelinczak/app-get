@@ -13,19 +13,25 @@ var updateCmd = &cobra.Command{
 	Use:   "update",
 	Short: "refresh list of applications from repository",
 	Run: func(cmd *cobra.Command, args []string) {
-		var installedApps = infrastructure.GetInstalledApps()
+		var appRepo = infrastructure.AppRepository{}
+		var installedApps = appRepo.Get()
+
 		for i := 0; i < len(installedApps); i++ {
 			var version = infrastructure.GetLatestVersion(installedApps[i].App)
-			fmt.Println("Latest available version of " + installedApps[i].App.Name + " version is " + version.Name)
 
 			if domain.IsAvailableVersionNewerAndStable(installedApps[i].Version, version.Name) {
-				fmt.Println("Download newer version of " + installedApps[i].App.Name)
+				fmt.Println("Download " + installedApps[i].App.Name + " " + version.Name)
 
-				var path = infrastructure.GetInstallationFile(installedApps[i].App, version)
-				infrastructure.InstallApp(path)
-				domain.UpdateAppVersion(installedApps[i].App, version.Name, infrastructure.GetInstalledApps, infrastructure.WriteInstalledApps)
+				var path, success = infrastructure.GetInstallationFile(installedApps[i].App, version)
+				if success {
+					infrastructure.InstallApp(path)
+					domain.UpdateAppVersion(installedApps[i].App, version.Name, appRepo)
+				}
+			} else {
+				fmt.Println("No newer version of " + installedApps[i].App.Name + " found (" + version.Name + ")")
 			}
 		}
+		fmt.Println("Update finished")
 	},
 }
 

@@ -15,6 +15,7 @@ var installCmd = &cobra.Command{
 	Short: "Install program defined in repository",
 	Long:  `Use search or list command to see list of available apps.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		var appRepo = infrastructure.AppRepository{}
 		if strings.Index(args[0], "/") == -1 {
 			fmt.Println("To install app from github you need to pass userName/repoName")
 			return
@@ -23,10 +24,12 @@ var installCmd = &cobra.Command{
 		fmt.Println("Check if deb is available")
 		var app = domain.App{SourceUrl: args[0], Name: strings.Split(args[0], "/")[1], AppType: domain.Deb, Source: domain.Github}
 		var version = infrastructure.GetLatestVersion(app)
-		var path = infrastructure.GetInstallationFile(app, version)
-		infrastructure.InstallApp(path)
-		domain.AddNewApp(app, version.Name, infrastructure.GetInstalledApps, infrastructure.WriteInstalledApps)
-		fmt.Println(app.Name + " installed")
+		var path, success = infrastructure.GetInstallationFile(app, version)
+		if success {
+			infrastructure.InstallApp(path)
+			domain.AddNewApp(app, version.Name, appRepo)
+			fmt.Println(app.Name + " installed")
+		}
 	},
 }
 

@@ -27,7 +27,7 @@ func CreateInstalledAppListFile() {
 }
 
 // GetInstalledApps load list of apps from apps.json
-func GetInstalledApps() []domain.InstalledApp {
+func getInstalledApps() []domain.InstalledApp {
 	var result = readFromFile(APPS_PATH)
 	var apps []domain.InstalledApp
 	json.Unmarshal([]byte(result), &apps)
@@ -35,7 +35,20 @@ func GetInstalledApps() []domain.InstalledApp {
 }
 
 // WriteInstalledApps overwrites list of installed apps
-func WriteInstalledApps(apps []domain.InstalledApp) {
+func writeInstalledApps(apps []domain.InstalledApp) {
 	var json, _ = json.MarshalIndent(apps, "", "    ")
 	writeToFile(APPS_PATH, string(json))
+}
+
+// AppRepository implementation
+type AppRepository struct{}
+
+// Get returns all installed applications
+func (appRepo AppRepository) Get() []domain.InstalledApp {
+	return getInstalledApps()
+}
+
+// Save overwrites list of apps
+func (appRepo AppRepository) Save(apps []domain.InstalledApp) {
+	writeInstalledApps(apps)
 }

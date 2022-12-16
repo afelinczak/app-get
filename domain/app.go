@@ -22,21 +22,21 @@ type App struct {
 }
 
 // AddNewApp - saves to disk updated list of installed apps
-func AddNewApp(newApp App, version string, getApps func() []InstalledApp, save func([]InstalledApp)) {
-	var apps = getApps()
+func AddNewApp(newApp App, version string, appsRepo IAppsRepository) {
+	var apps = appsRepo.Get()
 	var newAppWithVersion = InstalledApp{App: newApp, Version: version}
 	var newList = append(apps, newAppWithVersion)
-	save(newList)
+	appsRepo.Save(newList)
 }
 
 // UpdateAppVersion - updates version of the app and saves to disk
-func UpdateAppVersion(updatedApp App, version string, getApps func() []InstalledApp, save func([]InstalledApp)) {
-	var apps = getApps()
+func UpdateAppVersion(updatedApp App, version string, appsRepo IAppsRepository) {
+	var apps = appsRepo.Get()
 	for i := 0; i < len(apps); i++ {
 		if apps[i].App.Name == updatedApp.Name {
 			apps[i].Version = version
 			break
 		}
 	}
-	save(apps)
+	appsRepo.Save(apps)
 }

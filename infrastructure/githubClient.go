@@ -2,6 +2,7 @@ package infrastructure
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -20,7 +21,7 @@ type GitHubAsset struct {
 }
 
 type GithubVersion struct {
-	Name   string        `json:"name"`
+	Name   string        `json:"tag_name"`
 	Assets []GitHubAsset `json:"assets"`
 }
 
@@ -45,7 +46,8 @@ func GetLatestVersion(app domain.App) GithubVersion {
 	return appVersion
 }
 
-func GetInstallationFile(app domain.App, source GithubVersion) string {
+// GetInstallationFile will download amd64 deb file to disk. Returns path and succes
+func GetInstallationFile(app domain.App, source GithubVersion) (string, bool) {
 	if app.AppType != domain.Deb {
 		log.Fatal("Only deb files are supported")
 		os.Exit(102)
@@ -72,15 +74,15 @@ func GetInstallationFile(app domain.App, source GithubVersion) string {
 	}
 
 	if appUrl == "" {
-		log.Fatal("amd64 deb file not found")
-		os.Exit(404)
+		fmt.Println("deb package not found - skip")
+		return "", false
 	}
 
 	var path, err = downloadFile(appUrl)
 
 	if err != nil {
-		log.Fatalln(err)
-		os.Exit(105)
+		fmt.Println("Error while downloading deb file - skip")
+		return "", false
 	}
-	return path
+	return path, true
 }

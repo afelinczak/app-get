@@ -9,6 +9,16 @@
         },
         "version": "v0.22.1"
     },
+        {
+        "app": {
+            "name": "gkill-linux",
+            "app_url": "",
+            "app_type": "deb",
+            "source": "github",
+            "source_url": "heppu/gkill"
+        },
+        "version": "v0.0.1"
+    },
     {
         "app": {
             "name": "dbeaver-ce",
