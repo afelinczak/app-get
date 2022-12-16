@@ -28,7 +28,7 @@ func CreateInstalledAppListFile() {
 	var _, err = os.Stat(getAppsFile())
 
 	if errors.Is(err, os.ErrNotExist) {
-		os.Mkdir(getAppsPath(), 0777)
+		os.Mkdir(getAppsPath(), 0744)
 		var newFileContent, errCreate = os.Create(getAppsFile())
 		if errCreate != nil {
 			log.Fatal(errCreate)
