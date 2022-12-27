@@ -13,20 +13,22 @@ import (
 	"github.com/afelinczak/app-get/domain"
 )
 
-const GITHUB_API_URL string = "https://api.github.com/"
+const githubAPIURL string = "https://api.github.com/"
 
-type GitHubAsset struct {
+type gitHubAsset struct {
 	Name               string `json:"name"`
-	BrowserDownloadUrl string `json:"browser_download_url"`
+	BrowserDownloadURL string `json:"browser_download_url"`
 }
 
+// GithubVersion contains latest version with list of assets
 type GithubVersion struct {
 	Name   string        `json:"tag_name"`
-	Assets []GitHubAsset `json:"assets"`
+	Assets []gitHubAsset `json:"assets"`
 }
 
+// GetLatestVersion loads latest stable version of an app from github
 func GetLatestVersion(app domain.App) GithubVersion {
-	var url = GITHUB_API_URL + "repos/" + app.SourceUrl + "/releases/latest"
+	var url = githubAPIURL + "repos/" + app.SourceUrl + "/releases/latest"
 	var resp, err = http.Get(url)
 	if err != nil {
 		log.Fatalln(err)
@@ -58,27 +60,27 @@ func GetInstallationFile(app domain.App, source GithubVersion) (string, bool) {
 		os.Exit(103)
 	}
 
-	var appUrl string
+	var appURL string
 	for i := 0; i < len(source.Assets); i++ {
-		var parts []string = strings.Split(source.Assets[i].BrowserDownloadUrl, "/")
+		var parts []string = strings.Split(source.Assets[i].BrowserDownloadURL, "/")
 		var fileName string = parts[len(parts)-1]
 
 		if strings.HasSuffix(fileName, "amd64.deb") {
 			var regVer string = strings.Replace(source.Name, ".", "\\.", 3)
 			match, _ := regexp.MatchString(app.Name+"[_-]{1}"+regVer+"[_-]{1}"+"amd64.deb", fileName)
 			if match {
-				appUrl = source.Assets[i].BrowserDownloadUrl
+				appURL = source.Assets[i].BrowserDownloadURL
 				break
 			}
 		}
 	}
 
-	if appUrl == "" {
-		fmt.Println("deb package not found - skip")
+	if appURL == "" {
+		fmt.Println("  " + app.Name + " skip -> deb package not found")
 		return "", false
 	}
 
-	var path, err = downloadFile(appUrl)
+	var path, err = downloadFile(appURL)
 
 	if err != nil {
 		fmt.Println("Error while downloading deb file - skip")

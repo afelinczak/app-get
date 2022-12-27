@@ -6,21 +6,25 @@ import (
 	"log"
 	"os"
 	"os/user"
-	"strings"
 
 	"github.com/afelinczak/app-get/domain"
 )
 
-const APPS_FILE_PATH = "/home/{user}/.config/app-get"
-const APPS_FILE_NAME = "apps.json"
+const appFilePath = "/opt/app-get"
+const appsFileName = "apps.json"
 
-func getAppsPath() string {
+// EnsureIsAdmin will panic the app-get if it is not runned with root priviliges
+func EnsureIsAdmin() bool {
 	currentUser, _ := user.Current()
-	return strings.Replace(APPS_FILE_PATH, "{user}", currentUser.Username, 1)
+	if currentUser.Username != "root" {
+		println("APP-GET requires root access. Switch to root account or use sudo app-get.")
+		return false
+	}
+	return true
 }
 
 func getAppsFile() string {
-	return getAppsPath() + "/" + APPS_FILE_NAME
+	return appFilePath + "/" + appsFileName
 }
 
 // CreateInstalledAppListFile - creates empty apps.json file if not found
@@ -28,7 +32,7 @@ func CreateInstalledAppListFile() {
 	var _, err = os.Stat(getAppsFile())
 
 	if errors.Is(err, os.ErrNotExist) {
-		os.Mkdir(getAppsPath(), 0744)
+		os.Mkdir(appFilePath, 0744)
 		var newFileContent, errCreate = os.Create(getAppsFile())
 		if errCreate != nil {
 			log.Fatal(errCreate)

@@ -10,6 +10,8 @@ import (
 )
 
 func main() {
-	infrastructure.CreateInstalledAppListFile()
-	cmd.Execute()
+	if infrastructure.EnsureIsAdmin() == true {
+		infrastructure.CreateInstalledAppListFile()
+		cmd.Execute()
+	}
 }

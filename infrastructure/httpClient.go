@@ -8,11 +8,11 @@ import (
 	"path"
 )
 
-const TEMP_FILES_DIR string = "/tmp/"
+const tempFilesDir string = "/tmp/"
 
 func downloadFile(url string) (filePath string, err error) {
 
-	var path string = TEMP_FILES_DIR + path.Base(url)
+	var path string = tempFilesDir + path.Base(url)
 	// Create the file
 	out, err := os.Create(path)
 	if err != nil {

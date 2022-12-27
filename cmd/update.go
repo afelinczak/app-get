@@ -15,6 +15,7 @@ var updateCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		var appRepo = infrastructure.AppRepository{}
 		var installedApps = appRepo.Get()
+		fmt.Println("APP-GET will update installed apps")
 
 		for i := 0; i < len(installedApps); i++ {
 			var version = infrastructure.GetLatestVersion(installedApps[i].App)

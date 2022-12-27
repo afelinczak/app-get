@@ -20,7 +20,7 @@ var listCmd = &cobra.Command{
 		var apps = appRepo.Get()
 		fmt.Println("Installed applications")
 		for i := 0; i < len(apps); i++ {
-			fmt.Println(apps[i].App.Name + "(" + apps[i].Version + ")")
+			fmt.Println(apps[i].App.Name + " (" + apps[i].Version + ")")
 		}
 	},
 }
