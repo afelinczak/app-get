@@ -1,0 +1,11 @@
+-s dir
+-t deb
+-n app-get
+--license gpl3
+-p app-get_0.1.0_amd64.deb
+-v 0.1.0
+--architecture amd64
+--description "Update deb packages from github"
+--url "https://github.com/afelinczak/app-get"
+--maintainer "Arek Felinczak <arek_felinczak@tutanota.de>"
+app-get=/usr/bin/app-get
