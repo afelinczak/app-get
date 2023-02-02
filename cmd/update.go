@@ -12,6 +12,7 @@ import (
 var updateCmd = &cobra.Command{
 	Use:   "update",
 	Short: "download new version of the installed apps and installs them",
+	Long:  `Use sudo app-get update to update all apps using deb packages.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		var appRepo = infrastructure.AppRepository{}
 		var installedApps = appRepo.Get()
@@ -23,7 +24,7 @@ var updateCmd = &cobra.Command{
 			if domain.IsAvailableVersionNewerAndStable(installedApps[i].Version, version.Name) {
 				fmt.Println("Download " + installedApps[i].App.Name + " " + version.Name)
 
-				var path, success = infrastructure.GetInstallationFile(installedApps[i].App, version)
+				var path, success = infrastructure.GetInstallationFile(&installedApps[i].App, version)
 				if success {
 					infrastructure.InstallApp(path)
 					domain.UpdateAppVersion(installedApps[i].App, version.Name, appRepo)
