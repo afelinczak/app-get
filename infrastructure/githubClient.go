@@ -91,11 +91,11 @@ func GetInstallationFile(app *domain.App, source GithubVersion) (string, bool) {
 		fmt.Println("  " + app.Name + " skip -> deb package not found")
 		return "", false
 	} else if len(appURLs) > 1 {
+		fmt.Println("Multiple deb files found. Pick one to install")
 		name := askForFile(appURLs)
 		app.Name = getShortAppName(name)
 		fmt.Println("Adding " + app.Name + " to application list")
 		appURL = appURLs[name]
-
 	} else {
 		for k, v := range appURLs {
 			app.Name = getShortAppName(k)
