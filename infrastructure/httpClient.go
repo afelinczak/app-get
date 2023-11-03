@@ -14,6 +14,7 @@ const tempFilesDir string = "/tmp/"
 func downloadFile(url string) (filePath string, err error) {
 
 	var path string = tempFilesDir + path.Base(url)
+	grab.DefaultClient.UserAgent = "app-get-default-client"
 
 	client := grab.NewClient()
 	req, _ := grab.NewRequest(tempFilesDir, url)
@@ -39,6 +40,7 @@ Loop:
 	// check for errors
 	if err := resp.Err(); err != nil {
 		fmt.Fprintf(os.Stderr, "Download failed: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Url: : %v\n", url)
 		os.Exit(1)
 	}
 	return path, nil
